@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>1조현장개선프로젝트</title>
+    <style>
+        header {
+            background-color: #00CAFF; /* 배경색을 특정 파란색으로 설정 */
+            padding: 10px 0;
+            text-align: center;
+            color: #fff; /* 글씨 색상을 흰색으로 설정 */
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            color: #fff;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 20px;
+            color: #666;
+        }
+
+        .button-container {
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .button {
+            background-color: #87CEEB; /* 버튼 배경색 하늘색으로 변경 */
+            color: white; /* 버튼 글자색 */
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            margin: 5px;
+            border-radius: 5px; /* 버튼 모서리 둥글게 */
+            transition: background-color 0.3s; /* 배경색 변화 애니메이션 */
+        }
+        .button img {
+            width: 200px; /* 이미지 너비 4배 확대 */
+            height: 200px; /* 이미지 높이 4배 확대 */
+            display: block;
+            margin: 0 auto; /* 이미지 중앙 정렬 */
+        }
+        .button-text {
+            display: block;
+            margin-top: 10px; /* 이미지와 텍스트 사이 간격 */
+            font-size: 16px;
+        }
+        .button:hover {
+            background-color: #00BFFF; /* 호버 시 더 진한 하늘색으로 변경 */
+        }
+        
+        /* 폼 스타일 */
+        .form-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        input[type="text"], input[type="email"] {
+            padding: 10px;
+            margin: 5px;
+            width: 200px;
+            border: none;
+            border-radius: 5px;
+        }
+
+        button {
+            background-color: #87CEEB;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>보드 수리 및 재고 관리 전산시스템</h1>
+</header>
+    
+<div class="button-container">
+    <!-- 보드 수리 이력 버튼 -->
+    <a href="boardfix.html" class="button">
+        <img src="boardfix.jfif" alt="fix 이미지">
+        <span class="button-text">보드 수리 이력</span>
+    </a>
+
+    <!-- 재고 관리 버튼 -->
+    <a href="material.html" class="button">
+        <img src="material.png" alt="자재 이미지">
+        <span class="button-text">재고 관리</span>
+    </a>
+</div>
+
+<div class="form-container">
+    <h2>정보 입력</h2>
+    <form id="data-form">
+        <input type="text" id="name" placeholder="이름" required>
+        <input type="email" id="email" placeholder="이메일" required>
+        <button type="submit">제출</button>
+    </form>
+</div>
+    
+<footer>
+    <p>© 2024 1조. 모든 권리 보유.</p>
+</footer>
+
+<!-- Supabase 연결 스크립트 -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+<script>
+  // Supabase 연결 설정
+  const supabaseUrl = 'https://ckkwrgrziyjuywkhilml.supabase.co';
+  const supabaseKey = 'API'; // 실제 API 키로 바꿔주세요
+  const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+  
+  // 데이터 추가 함수
+  document.getElementById("data-form").addEventListener("submit", async function(event) {
+      event.preventDefault();
+
+      const name = document.getElementById("name").value;
+      const email = document.getElementById("email").value;
+
+      const { data, error } = await supabase
+          .from('users') // Supabase 테이블 이름
+          .insert([{ name: name, email: email }]);
+
+      if (error) {
+          console.error('Error inserting data:', error);
+          alert("데이터 추가 중 오류가 발생했습니다.");
+      } else {
+          console.log('Data inserted:', data);
+          alert("데이터가 성공적으로 추가되었습니다!");
+          document.getElementById("data-form").reset(); // 폼 초기화
+      }
+  });
+
+  // 데이터 가져오기 예시
+  async function fetchData() {
+      const { data, error } = await supabase
+          .from('your_table_name') // Supabase 테이블 이름
+          .select('*'); // 모든 데이터 가져오기
+
+      if (error) {
+          console.error('Error fetching data:', error);
+      } else {
+          console.log('Data:', data);
+      }
+  }
+
+  // 페이지 로드 시 데이터 가져오기
+  window.onload = fetchData;
+</script>
+
+</body>
+</html>
