@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SITE 페이지 - 1조현장개선프로젝트</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        header {
+            background-color: #00CAFF;
+            padding: 10px 0;
+            text-align: center;
+            color: #fff;
+        }
+        footer {
+            text-align: center;
+            margin-top: 20px;
+            color: #666;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+        
+    </style>
+
+</head>
+<body>
+
+<header>
+    <h1>SITE-S132-232</h1>
+</header>
+
+<section>
+    <h2>보드 정보 | 고객사
+        <td><input type="text" placeholder="" class="edit-field"></td>
+    </h2>
+    <table id="boardTable">
+        <thead>
+            <tr>
+                <th>넘버</th>
+                <th>비용구분</th>
+                <th>WRS_NO</th>
+                <th>접수일자</th>
+                <th>조치일자</th>
+                <th>조치내역</th>
+                <th>담당자</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- 테이블 행은 JavaScript로 동적으로 추가됩니다. -->
+        </tbody>
+    </table>
+
+    <!-- 버튼들 -->
+    <div class="button-container">
+        <button class="btn" onclick="addRow()">행 추가</button>
+        <button class="btn save-btn" onclick="saveData()">저장</button>
+    </div>
+</section>
+
+<a href="/mbt_button_BP">뒤로 돌아가기</a>
+
+<footer>
+    <p>© 2024 1조 현장개선 프로젝트</p>
+</footer>
+
+<script>
+    // 서버에서 데이터를 불러오는 함수
+    async function loadData() {
+        const response = await fetch('/get_board_data');
+        const data = await response.json();
+
+        const tableBody = document.getElementById('boardTable').getElementsByTagName('tbody')[0];
+
+        //버튼
+        data.forEach((rowData, index) => {
+            const newRow = tableBody.insertRow();
+            newRow.innerHTML = `
+                <td>${rowData.number}</td>
+                <td><input type="text" placeholder="" class="edit-field"></td>  
+                <td><input type="text" placeholder="" class="edit-field"></td>  
+                <td><input type="text" placeholder="" class="edit-field"></td>  
+                <td><input type="text" placeholder="" class="edit-field"></td>  
+                <td><input type="text" placeholder="" class="edit-field"></td>  
+                <td><input type="text" placeholder="" class="edit-field"></td>  
+                <td><button class="btn delete-btn" onclick="deleteRow(this)">삭제</button></td>
+            `;
+        });
+    }
+
+    // 페이지 로드 시 서버에서 데이터 불러오기
+    window.onload = function() {
+        loadData();
+    };
+
+    // 테이블에 추가할 새로운 행을 생성하는 함수
+    function addRow() {
+        const tableBody = document.getElementById('boardTable').getElementsByTagName('tbody')[0];
+        const rowCount = tableBody.rows.length + 1; // 넘버는 자동으로 증가
+
+        // 새 행 추가
+        const newRow = tableBody.insertRow();
+
+        // 새로운 셀을 추가하고 내용 채우기
+        newRow.innerHTML = `
+            <td>${rowCount}</td>
+                <td><input type="text" placeholder="" class="edit-field"></td>  
+                <td><input type="text" placeholder="" class="edit-field"></td>  
+                <td><input type="text" placeholder="" class="edit-field"></td>  
+                <td><input type="text" placeholder="" class="edit-field"></td>  
+                <td><input type="text" placeholder="" class="edit-field"></td>  
+                <td><input type="text" placeholder="" class="edit-field"></td>  
+                <td><button class="btn delete-btn" onclick="deleteRow(this)">삭제</button></td>
+        `;
+    }
+
+    // 행을 삭제하는 함수
+    function deleteRow(button) {
+        const row = button.parentElement.parentElement; // 버튼의 부모 tr을 찾음
+        row.remove();
+    }
+
+    // 행을 수정하는 함수
+    function editRow(button) {
+        const row = button.parentElement.parentElement; // 버튼의 부모 tr을 찾음
+        const boardName = row.cells[1].getElementsByTagName('input')[0];
+        const repairHistory = row.cells[2].getElementsByTagName('input')[0];
+
+        // 수정한 값을 입력받기
+        const newBoardName = prompt("새 보드이름:", boardName.value);
+        const newRepairHistory = prompt("새 수리이력:", repairHistory.value);
+
+        if (newBoardName !== null && newRepairHistory !== null) {
+            boardName.value = newBoardName;
+            repairHistory.value = newRepairHistory;
+        }
+    }
+
+    // 저장 버튼 클릭 시 서버로 데이터 전송
+    async function saveData() {
+        const tableRows = document.getElementById('boardTable').getElementsByTagName('tbody')[0].rows;
+        const boardData = [];
+
+        // 각 행의 데이터를 배열에 추가
+        for (let row of tableRows) {
+            const rowData = {
+                number: row.cells[0].textContent, // 넘버
+                boardName: row.cells[1].getElementsByTagName('input')[0].value, // 보드이름
+                repairHistory: row.cells[2].getElementsByTagName('input')[0].value // 수리이력
+            };
+            boardData.push(rowData);
+        }
+
+        // 서버로 데이터 전송 (FastAPI 서버)
+        const response = await fetch('/save_board_data', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(boardData)
+        });
+        
+        if (response.ok) {
+            alert("데이터가 서버에 저장되었습니다!");
+        } else {
+            alert("저장에 실패했습니다.");
+        }
+    }
+</script>
+
+</body>
+</html>
