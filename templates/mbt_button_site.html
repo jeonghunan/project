@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>1조현장개선프로젝트</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        header {
+                background-color: #00CAFF; /* 배경색을 특정 파란색으로 설정 */
+                padding: 10px 0;
+                text-align: center;
+                color: #fff; /* 글씨 색상을 흰색으로 설정 */
+        }
+        footer {
+            text-align: center;
+            margin-top: 20px;
+            color: #666;
+        }
+        .button-container {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .button {
+            background-color: #87CEEB; /* 버튼 배경색 */
+            color: white; /* 버튼 글자색 */
+            padding: 40px 80px; /* 버튼 패딩을 4배로 증가 */
+            font-size: 2em; /* 버튼 글자 크기를 4배로 증가 */
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            margin: 20px; /* 여백을 넓게 조정 */
+            border-radius: 10px; /* 버튼 모서리 둥글게 */
+            transition: background-color 0.3s; /* 배경색 변화 애니메이션 */
+        }
+        .button:hover {
+            background-color: #000; /* 호버 시 배경색 변화 */
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>SITE</h1>
+</header>
+
+<section>
+    <h2>시리얼 넘버를 선택 해주세요.</h2>
+    <p>시리얼 넘버 검색창</p>
+</section>
+
+<input type="text" id="search-input" placeholder="검색어를 입력하세요" onkeyup="searchFunction()">
+<ul id="results-list"></ul>
+
+<script>
+    // 버튼 데이터 배열
+    const buttons = [
+        { name: "SITE-S132-222", link: "/SITE-S132-222" },
+        { name: "SITE-S132-223", link: "/SITE-S132-223" },
+        { name: "SITE-S132-224", link: "/SITE-S132-224" },
+        { name: "SITE-S132-225", link: "/SITE-S132-225" },
+        { name: "SITE-S132-226", link: "/SITE-S132-226" },
+        { name: "SITE-S132-227", link: "/SITE-S132-227" },
+        { name: "SITE-S132-228", link: "/SITE-S132-228" },
+        { name: "SITE-S132-229", link: "/SITE-S132-229" },
+        { name: "SITE-S132-230", link: "/SITE-S132-230" },
+        { name: "SITE-S132-231", link: "/SITE-S132-231" },
+        { name: "SITE-S132-232", link: "/SITE-S132-232" },
+        { name: "SITE-S132-233", link: "/SITE-S132-233" },
+
+    ];
+
+    // 검색 함수
+    function searchFunction() {
+        const query = document.getElementById("search-input").value.toLowerCase().trim();
+        
+        // 검색창이 빈칸일 시 함수를 종료
+        if (query === "") {
+            document.getElementById("results-list").innerHTML = "";
+            return;
+        }
+        
+        let results = buttons.filter(button => button.name.toLowerCase().includes(query));
+
+        // 검색어와 완전히 일치하는 결과가 있다면 최우선으로 배치
+        results.sort((a, b) => {
+            if (a.name.toLowerCase() === query) return -1;
+            if (b.name.toLowerCase() === query) return 1;
+            return 0;
+        });
+
+        displayResults(results);
+    }
+
+    // 검색 결과 표시 함수
+    function displayResults(results) {
+        const resultsList = document.getElementById("results-list");
+        resultsList.innerHTML = "";
+
+        results.forEach(button => {
+            const li = document.createElement("li");
+            const a = document.createElement("a");
+            a.href = button.link;
+            a.textContent = button.name;
+            a.className = "button";
+            li.appendChild(a);
+            resultsList.appendChild(li);
+        });
+    }
+</script>
+
+<div class="button-container">
+    <a href="/SITE-S132-222" class="button">SITE-S132-222</a>
+    <a href="/SITE-S132-223" class="button">SITE-S132-223</a>
+    <a href="/SITE-S132-224" class="button">SITE-S132-224</a>
+    <a href="/SITE-S132-225" class="button">SITE-S132-225</a>
+    <a href="/SITE-S132-226" class="button">SITE-S132-226</a>
+    <a href="/SITE-S132-227" class="button">SITE-S132-227</a>
+    <a href="/SITE-S132-228" class="button">SITE-S132-228</a>
+    <a href="/SITE-S132-229" class="button">SITE-S132-229</a>
+    <a href="/SITE-S132-230" class="button">SITE-S132-230</a>
+    <a href="/SITE-S132-231" class="button">SITE-S132-231</a>
+    <a href="/SITE-S132-232" class="button">SITE-S132-232</a>
+    <a href="/SITE-S132-233" class="button">SITE-S132-233</a>
+</div>
+
+<a href="/mbt_button">뒤로 돌아가기</a>
+
+<footer>
+    <p>© 2024 1조. 모든 권리 보유.</p>
+</footer>
+
+</body>
+</html>
